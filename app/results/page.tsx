@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { drivers } from "@/lib/drivers";
+import Modal from "@/app/components/Modal";
 
 type RaceResult = {
   quali_p1: string;
@@ -19,6 +20,13 @@ type Race = {
   result: RaceResult | null;
 };
 
+type ModalState = {
+  isOpen: boolean;
+  type: "success" | "error" | "warning" | "info";
+  title: string;
+  message: string;
+};
+
 export default function ResultsPage() {
   const [races, setRaces] = useState<Race[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +40,20 @@ export default function ResultsPage() {
     race_p3: "",
     race_p4: "",
   });
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
+
+  const showModal = (type: ModalState["type"], title: string, message: string) => {
+    setModal({ isOpen: true, type, title, message });
+  };
+
+  const closeModal = () => {
+    setModal((m) => ({ ...m, isOpen: false }));
+  };
 
   // Fetch races and their results
   useEffect(() => {
@@ -63,7 +85,7 @@ export default function ResultsPage() {
       !form.race_p3 ||
       !form.race_p4
     ) {
-      alert("Please fill in all fields");
+      showModal("warning", "Incomplete Form", "Please fill in all qualifying and race positions before submitting.");
       return;
     }
 
@@ -77,7 +99,8 @@ export default function ResultsPage() {
       const data = await res.json();
 
       if (data.success) {
-        alert("🏁 Race result submitted successfully!");
+        const raceName = races.find(r => r.id === form.race_id)?.name || "the race";
+        showModal("success", "Results Submitted!", `The official results for ${raceName} have been recorded. Points will be calculated automatically.`);
         // Update local state
         setRaces((prev) =>
           prev.map((r) =>
@@ -108,10 +131,22 @@ export default function ResultsPage() {
           race_p4: "",
         });
       } else {
-        alert(data.error || "Failed to submit result");
+        // Handle specific errors
+        let errorTitle = "Submission Failed";
+        let errorMessage = data.error || "An unknown error occurred. Please try again.";
+        
+        if (data.error?.includes("already exists")) {
+          errorTitle = "Results Already Entered";
+          errorMessage = "Results have already been entered for this race. Each race can only have one set of results.";
+        } else if (data.error?.includes("not found")) {
+          errorTitle = "Race Not Found";
+          errorMessage = "The selected race could not be found. Please refresh the page and try again.";
+        }
+        
+        showModal("error", errorTitle, errorMessage);
       }
     } catch (err) {
-      alert("An error occurred. Please try again.");
+      showModal("error", "Connection Error", "Unable to connect to the server. Please check your internet connection and try again.");
     } finally {
       setSubmitting(false);
     }
@@ -146,6 +181,15 @@ export default function ResultsPage() {
 
   return (
     <main className="container">
+      {/* Modal */}
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={closeModal}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+      />
+
       {/* Header */}
       <div className="f1-decoration">
         <div className="f1-line"></div>

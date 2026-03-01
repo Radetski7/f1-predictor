@@ -3,8 +3,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { drivers } from "@/lib/drivers";
 import { users } from "@/lib/users";
+import Modal from "@/app/components/Modal";
 
 type Race = { id: string; name: string };
+
+type ModalState = {
+  isOpen: boolean;
+  type: "success" | "error" | "warning" | "info";
+  title: string;
+  message: string;
+};
 
 export default function Home() {
   const [races, setRaces] = useState<Race[]>([]);
@@ -19,6 +27,20 @@ export default function Home() {
     p2: "",
     p3: "",
   });
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
+
+  const showModal = (type: ModalState["type"], title: string, message: string) => {
+    setModal({ isOpen: true, type, title, message });
+  };
+
+  const closeModal = () => {
+    setModal((m) => ({ ...m, isOpen: false }));
+  };
 
   // Fetch races on initial load
   useEffect(() => {
@@ -60,7 +82,7 @@ export default function Home() {
 
     // Simple frontend validation: ensure all fields are selected
     if (!form.user || !form.race_id || !form.pole || !form.p1 || !form.p2 || !form.p3) {
-      alert("Please select all fields");
+      showModal("warning", "Incomplete Form", "Please select all fields before submitting your prediction.");
       return;
     }
 
@@ -74,7 +96,8 @@ export default function Home() {
       const data = await res.json();
       
       if (data.success) {
-        alert("🏁 Prediction submitted successfully!");
+        const raceName = races.find(r => r.id === form.race_id)?.name || "the race";
+        showModal("success", "Prediction Submitted!", `Your prediction for ${raceName} has been recorded. Good luck!`);
         const newSubmittedRaces = [...submittedRaces, form.race_id];
         setSubmittedRaces(newSubmittedRaces);
         
@@ -93,10 +116,25 @@ export default function Home() {
           p3: "",
         }));
       } else {
-        alert(data.error || "Failed to submit prediction");
+        // Handle specific errors with better messages
+        let errorTitle = "Submission Failed";
+        let errorMessage = data.error || "An unknown error occurred. Please try again.";
+        
+        if (data.error?.includes("already submitted")) {
+          errorTitle = "Already Submitted";
+          errorMessage = "You have already submitted a prediction for this race. Each user can only submit one prediction per race.";
+        } else if (data.error?.includes("prediction was already taken")) {
+          errorTitle = "Prediction Taken";
+          errorMessage = "This exact prediction combination has already been taken by another user. Please choose different drivers.";
+        } else if (data.error?.includes("locked")) {
+          errorTitle = "Predictions Locked";
+          errorMessage = "Predictions for this race are now locked. The deadline has passed.";
+        }
+        
+        showModal("error", errorTitle, errorMessage);
       }
     } catch (err) {
-      alert("An error occurred. Please try again.");
+      showModal("error", "Connection Error", "Unable to connect to the server. Please check your internet connection and try again.");
     } finally {
       setSubmitting(false);
     }
@@ -136,6 +174,15 @@ export default function Home() {
 
   return (
     <main className="container">
+      {/* Modal */}
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={closeModal}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+      />
+
       {/* Header */}
       <div className="f1-decoration">
         <div className="f1-line"></div>
