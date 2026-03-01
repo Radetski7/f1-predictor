@@ -343,3 +343,115 @@ body {
   border-radius: 4px;
   letter-spacing: 0.1em;
 }
+
+/* Predictions Table */
+.predictions-table-container {
+  overflow-x: auto;
+  margin: -0.5rem;
+  padding: 0.5rem;
+}
+
+.predictions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.predictions-table th,
+.predictions-table td {
+  padding: 0.875rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.predictions-table th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--input-bg);
+}
+
+.predictions-table th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.predictions-table th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.predictions-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.predictions-table tbody tr:hover {
+  background: rgba(15, 52, 96, 0.5);
+}
+
+.predictions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.predictions-table .user-cell {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.predictions-table .date-cell {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+  .predictions-table {
+    font-size: 0.8rem;
+  }
+  
+  .predictions-table th,
+  .predictions-table td {
+    padding: 0.625rem 0.5rem;
+  }
+}
+
+/* Races List */
+.races-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.race-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--input-bg);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.race-item:hover {
+  transform: translateX(4px);
+  background: var(--card-border);
+  border-color: var(--primary);
+}
+
+.race-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.race-arrow {
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.race-item:hover .race-arrow {
+  transform: translateX(4px);
+  color: var(--primary);
+}

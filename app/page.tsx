@@ -72,9 +72,23 @@ export default function Home() {
       
       if (data.success) {
         alert("🏁 Prediction submitted successfully!");
-        setSubmittedRaces((prev) => [...prev, form.race_id]);
-        // Reset driver selections
-        setForm((f) => ({ ...f, pole: "", p1: "", p2: "", p3: "" }));
+        const newSubmittedRaces = [...submittedRaces, form.race_id];
+        setSubmittedRaces(newSubmittedRaces);
+        
+        // Find next available race
+        const nextAvailableRace = races.find(
+          (r) => !newSubmittedRaces.includes(r.id)
+        );
+        
+        // Reset form with next available race or keep current if none available
+        setForm((f) => ({
+          ...f,
+          race_id: nextAvailableRace ? nextAvailableRace.id : "",
+          pole: "",
+          p1: "",
+          p2: "",
+          p3: "",
+        }));
       } else {
         alert(data.error || "Failed to submit prediction");
       }
@@ -197,9 +211,14 @@ export default function Home() {
         )}
       </div>
 
-      <Link href="/standings" className="link">
-        📊 View Leaderboard →
-      </Link>
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+        <Link href="/races" className="link">
+          📋 View Race Predictions →
+        </Link>
+        <Link href="/standings" className="link">
+          📊 View Leaderboard →
+        </Link>
+      </div>
     </main>
   );
 }
