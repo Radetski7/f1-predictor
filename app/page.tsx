@@ -103,15 +103,27 @@ export default function Home() {
   }
 
   // Compute available drivers dynamically
+  // Pole position is independent - same driver can be selected for pole and P1/P2/P3
+  // P1, P2, P3 must be unique among themselves
   const getAvailableDrivers = (currentField: string) => {
-    const selectedDrivers = ["pole", "p1", "p2", "p3"]
+    // For pole position, all drivers are available
+    if (currentField === "pole") {
+      return drivers.map((d) => ({
+        name: d,
+        disabled: false,
+      }));
+    }
+    
+    // For P1, P2, P3 - only restrict based on other podium positions (not pole)
+    const podiumFields = ["p1", "p2", "p3"];
+    const selectedPodiumDrivers = podiumFields
       .filter((f) => f !== currentField)
       .map((f) => (form as Record<string, string>)[f])
       .filter(Boolean);
 
     return drivers.map((d) => ({
       name: d,
-      disabled: selectedDrivers.includes(d),
+      disabled: selectedPodiumDrivers.includes(d),
     }));
   };
 
