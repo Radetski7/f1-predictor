@@ -175,11 +175,12 @@ export default function Home() {
             <div className="form-group">
               <label className="form-label">🏁 Race</label>
               <select
-                className="form-select"
+                className={`form-select ${!form.user ? "form-select-disabled" : ""}`}
                 value={form.race_id}
                 onChange={(e) => setForm({ ...form, race_id: e.target.value })}
+                disabled={!form.user}
               >
-                <option value="">Select race...</option>
+                <option value="">{form.user ? "Select race..." : "Select user first..."}</option>
                 {races.map((r) => (
                   <option
                     key={r.id}
@@ -200,11 +201,12 @@ export default function Home() {
                 <div key={field} className="form-group">
                   <label className="form-label">{fieldLabels[field]}</label>
                   <select
-                    className="form-select"
+                    className={`form-select ${!form.user ? "form-select-disabled" : ""}`}
                     value={(form as Record<string, string>)[field]}
                     onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                    disabled={!form.user}
                   >
-                    <option value="">Select driver...</option>
+                    <option value="">{form.user ? "Select driver..." : "Select user first..."}</option>
                     {getAvailableDrivers(field).map((d) => (
                       <option key={d.name} value={d.name} disabled={d.disabled}>
                         {d.name}

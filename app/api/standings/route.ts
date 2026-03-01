@@ -9,6 +9,15 @@ export async function GET() {
 
   const pointsMap: Record<string, number> = {};
 
+  // First, initialize all users who have made at least 1 prediction with 0 points
+  preds.forEach((pred: string[]) => {
+    const user = pred[1];
+    if (!(user in pointsMap)) {
+      pointsMap[user] = 0;
+    }
+  });
+
+  // Then calculate points for races that have results
   preds.forEach((pred: string[]) => {
     const [race_id, user, pole, p1, p2, p3] = pred;
     const raceResult = res.find((r: string[]) => r[0] === race_id);
@@ -49,7 +58,7 @@ export async function GET() {
       }
     });
 
-    pointsMap[user] = (pointsMap[user] || 0) + score;
+    pointsMap[user] = pointsMap[user] + score;
   });
 
   const standings = Object.entries(pointsMap)

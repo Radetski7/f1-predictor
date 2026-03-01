@@ -124,6 +124,13 @@ body {
   color: var(--text-muted);
 }
 
+.form-select:disabled,
+.form-select-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--secondary);
+}
+
 /* Button styles */
 .btn {
   display: inline-flex;
