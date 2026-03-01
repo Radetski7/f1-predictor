@@ -1,0 +1,23 @@
+// lib/drivers.ts
+export const drivers = [
+  "Verstappen",
+  "Leclerc",
+  "Norris",
+  "Sainz",
+  "Perez",
+  "Hamilton",
+  "Russell",
+  "Alonso",
+  "Ricciardo",
+  "Gasly",
+  "Zhou",
+  "Magnussen",
+  "Vettel",
+  "Stroll",
+  "Tsunoda",
+  "Hulkenberg",
+  "Schumacher",
+  "Ocon",
+  "Piastri",
+  "De Vries",
+];
