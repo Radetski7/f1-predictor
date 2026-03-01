@@ -62,10 +62,7 @@ export default function StandingsPage() {
         ) : standings.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-icon">🏎️</div>
-            <p>No predictions yet.</p>
-            <p style={{ fontSize: "0.875rem", marginTop: "0.5rem" }}>
-              Be the first to make a prediction!
-            </p>
+            <p>No points yet.</p>
           </div>
         ) : (
           <ul className="standings-list">
