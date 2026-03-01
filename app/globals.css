@@ -455,3 +455,172 @@ body {
   transform: translateX(4px);
   color: var(--primary);
 }
+
+.race-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.race-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.race-status-complete {
+  color: var(--success);
+}
+
+.race-status-pending {
+  color: var(--text-muted);
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+/* Result Display */
+.result-display {
+  background: var(--input-bg);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.result-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.result-grid div {
+  padding: 0.5rem;
+  background: var(--card-border);
+  border-radius: 6px;
+}
+
+.result-grid strong {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Results Display on Race Page */
+.results-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.results-section {
+  background: var(--input-bg);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.results-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.results-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.results-row:not(:last-child) {
+  border-bottom: 1px solid var(--card-border);
+}
+
+.results-position {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.results-driver {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+@media (max-width: 480px) {
+  .results-display {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Prediction matching styles */
+.correct-cell {
+  background: rgba(0, 210, 106, 0.15);
+  color: var(--success);
+  font-weight: 600;
+}
+
+.close-cell {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.legend-correct {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.legend-close {
+  color: #ffc107;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .legend {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+}

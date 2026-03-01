@@ -235,6 +235,9 @@ export default function Home() {
         <Link href="/standings" className="link">
           📊 View Leaderboard →
         </Link>
+        <Link href="/results" className="link">
+          🏆 Enter Race Results →
+        </Link>
       </div>
     </main>
   );

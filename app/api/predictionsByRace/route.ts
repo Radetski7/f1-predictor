@@ -32,11 +32,25 @@ export async function GET(req: Request) {
       submittedAt: r[6],
     }));
 
+  // Get results for this race
+  const results = await readSheet("results");
+  const raceResult = results.slice(1).find((r: string[]) => r[0] === race_id);
+
   return Response.json({
     race: {
       id: race[0],
       name: race[1],
     },
     predictions: racePredictions,
+    result: raceResult
+      ? {
+          quali_p1: raceResult[1],
+          quali_p2: raceResult[2],
+          race_p1: raceResult[3],
+          race_p2: raceResult[4],
+          race_p3: raceResult[5],
+          race_p4: raceResult[6],
+        }
+      : null,
   });
 }

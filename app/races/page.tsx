@@ -5,6 +5,7 @@ import Link from "next/link";
 type Race = {
   id: string;
   name: string;
+  hasResult: boolean;
 };
 
 export default function RacesList() {
@@ -15,7 +16,7 @@ export default function RacesList() {
     async function fetchRaces() {
       setLoading(true);
       try {
-        const res = await fetch("/api/races");
+        const res = await fetch("/api/results");
         const data = await res.json();
         setRaces(data.races);
       } catch (err) {
@@ -37,7 +38,7 @@ export default function RacesList() {
       </div>
 
       <h1 className="title">All Races</h1>
-      <p className="subtitle">View predictions for each race</p>
+      <p className="subtitle">View predictions and results for each race</p>
 
       <div className="card">
         {loading ? (
@@ -55,7 +56,15 @@ export default function RacesList() {
                 href={`/race/${race.id}`}
                 className="race-item"
               >
-                <span className="race-name">{race.name}</span>
+                <div className="race-info">
+                  <span className="race-name">{race.name}</span>
+                  {race.hasResult && (
+                    <span className="race-status race-status-complete">✓ Results Available</span>
+                  )}
+                  {!race.hasResult && (
+                    <span className="race-status race-status-pending">Awaiting Results</span>
+                  )}
+                </div>
                 <span className="race-arrow">→</span>
               </Link>
             ))}
@@ -66,6 +75,9 @@ export default function RacesList() {
       <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
         <Link href="/" className="link">
           ← Back to Predictions
+        </Link>
+        <Link href="/results" className="link">
+          🏆 Enter Results
         </Link>
         <Link href="/standings" className="link">
           📊 Leaderboard
