@@ -1,8 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
+type Standing = {
+  user: string;
+  points: number;
+};
 
 export default function StandingsPage() {
-  const [standings, setStandings] = useState<any[]>([]);
+  const [standings, setStandings] = useState<Standing[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,27 +27,68 @@ export default function StandingsPage() {
     fetchStandings();
   }, []);
 
+  const getRankClass = (index: number) => {
+    if (index === 0) return "rank-1";
+    if (index === 1) return "rank-2";
+    if (index === 2) return "rank-3";
+    return "rank-other";
+  };
+
+  const getTrophy = (index: number) => {
+    if (index === 0) return "🏆";
+    if (index === 1) return "🥈";
+    if (index === 2) return "🥉";
+    return "";
+  };
+
   return (
-    <main style={{ padding: 20 }}>
-      <h1>Leaderboard</h1>
+    <main className="container">
+      {/* Header */}
+      <div className="f1-decoration">
+        <div className="f1-line"></div>
+        <span className="f1-badge">2025</span>
+        <div className="f1-line f1-line-right"></div>
+      </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : standings.length === 0 ? (
-        <p>No predictions yet.</p>
-      ) : (
-        <ul>
-          {standings.map((s, i) => (
-            <li key={i}>
-              {i + 1}. {s.user}: {s.points}
-            </li>
-          ))}
-        </ul>
-      )}
+      <h1 className="title">Leaderboard</h1>
+      <p className="subtitle">See who&apos;s leading the prediction championship</p>
 
-      <p>
-        <a href="/">Back to Predictions</a>
-      </p>
+      <div className="card">
+        {loading ? (
+          <div className="loading">
+            <div className="spinner"></div>
+            <p>Loading standings...</p>
+          </div>
+        ) : standings.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🏎️</div>
+            <p>No predictions yet.</p>
+            <p style={{ fontSize: "0.875rem", marginTop: "0.5rem" }}>
+              Be the first to make a prediction!
+            </p>
+          </div>
+        ) : (
+          <ul className="standings-list">
+            {standings.map((s, i) => (
+              <li key={i} className="standings-item">
+                <div className="standings-rank">
+                  <span className={`rank-number ${getRankClass(i)}`}>
+                    {i + 1}
+                  </span>
+                  <span className="standings-name">
+                    {getTrophy(i)} {s.user}
+                  </span>
+                </div>
+                <span className="standings-points">{s.points} pts</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <Link href="/" className="link">
+        ← Back to Predictions
+      </Link>
     </main>
   );
 }
