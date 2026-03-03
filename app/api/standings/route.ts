@@ -1,5 +1,11 @@
 import { readSheet } from "@/lib/googleSheets";
 
+type UserStats = {
+  points: number;
+  exactMatches: number;
+  semiMatches: number;
+};
+
 export async function GET() {
   const predictions = await readSheet("predictions");
   const results = await readSheet("results");
@@ -7,13 +13,13 @@ export async function GET() {
   const preds = predictions.slice(1);
   const res = results.slice(1);
 
-  const pointsMap: Record<string, number> = {};
+  const statsMap: Record<string, UserStats> = {};
 
-  // First, initialize all users who have made at least 1 prediction with 0 points
+  // First, initialize all users who have made at least 1 prediction
   preds.forEach((pred: string[]) => {
     const user = pred[1];
-    if (!(user in pointsMap)) {
-      pointsMap[user] = 0;
+    if (!(user in statsMap)) {
+      statsMap[user] = { points: 0, exactMatches: 0, semiMatches: 0 };
     }
   });
 
@@ -33,13 +39,13 @@ export async function GET() {
       race_p4,
     ] = raceResult;
 
-    let score = 0;
-
     // --- POLE (Qualifying P1) ---
     if (pole === quali_p1) {
-      score += 1;
+      statsMap[user].points += 1;
+      statsMap[user].exactMatches += 1;
     } else if (pole === quali_p2) {
-      score += 0.5;
+      statsMap[user].points += 0.5;
+      statsMap[user].semiMatches += 1;
     }
 
     // --- RACE POSITIONS ---
@@ -52,18 +58,30 @@ export async function GET() {
       if (actualIndex === -1) return;
 
       if (actualIndex === i) {
-        score += 1;
+        statsMap[user].points += 1;
+        statsMap[user].exactMatches += 1;
       } else if (Math.abs(actualIndex - i) === 1) {
-        score += 0.5;
+        statsMap[user].points += 0.5;
+        statsMap[user].semiMatches += 1;
       }
     });
-
-    pointsMap[user] = pointsMap[user] + score;
   });
 
-  const standings = Object.entries(pointsMap)
-    .map(([user, points]) => ({ user, points }))
-    .sort((a, b) => b.points - a.points);
+  const standings = Object.entries(statsMap)
+    .map(([user, stats]) => ({
+      user,
+      points: stats.points,
+      exactMatches: stats.exactMatches,
+      semiMatches: stats.semiMatches,
+    }))
+    .sort((a, b) => {
+      // First sort by points (descending)
+      if (b.points !== a.points) {
+        return b.points - a.points;
+      }
+      // If points are equal, sort by exact matches (descending)
+      return b.exactMatches - a.exactMatches;
+    });
 
   return Response.json({ standings });
 }

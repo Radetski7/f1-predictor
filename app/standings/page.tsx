@@ -5,6 +5,8 @@ import Link from "next/link";
 type Standing = {
   user: string;
   points: number;
+  exactMatches: number;
+  semiMatches: number;
 };
 
 export default function StandingsPage() {
@@ -46,7 +48,7 @@ export default function StandingsPage() {
       {/* Header */}
       <div className="f1-decoration">
         <div className="f1-line"></div>
-        <span className="f1-badge">2025</span>
+        <span className="f1-badge">2026</span>
         <div className="f1-line f1-line-right"></div>
       </div>
 
@@ -62,7 +64,7 @@ export default function StandingsPage() {
         ) : standings.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-icon">🏎️</div>
-            <p>No points yet.</p>
+            <p>No predictions yet.</p>
           </div>
         ) : (
           <ul className="standings-list">
@@ -76,16 +78,36 @@ export default function StandingsPage() {
                     {getTrophy(i)} {s.user}
                   </span>
                 </div>
-                <span className="standings-points">{s.points} pts</span>
+                <div className="standings-stats">
+                  <div className="standings-matches">
+                    <span className="match-exact" title="Exact matches (1 pt each)">
+                      ✓ {s.exactMatches}
+                    </span>
+                    <span className="match-semi" title="Semi-matches (0.5 pt each)">
+                      ½ {s.semiMatches}
+                    </span>
+                  </div>
+                  <span className="standings-points">{s.points} pts</span>
+                </div>
               </li>
             ))}
           </ul>
         )}
+        
+        <div className="standings-legend">
+          <span>✓ = Exact match (1 pt)</span>
+          <span>½ = Off by one (0.5 pt)</span>
+        </div>
       </div>
 
-      <Link href="/" className="link">
-        ← Back to Predictions
-      </Link>
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+        <Link href="/" className="link">
+          ← Back to Predictions
+        </Link>
+        <Link href="/races" className="link">
+          📋 View Race Predictions
+        </Link>
+      </div>
     </main>
   );
 }
