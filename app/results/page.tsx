@@ -16,6 +16,8 @@ type RaceResult = {
 type Race = {
   id: string;
   name: string;
+  fp1_start: string;
+  canEnterResults: boolean;
   hasResult: boolean;
   result: RaceResult | null;
 };
@@ -141,6 +143,9 @@ export default function ResultsPage() {
         } else if (data.error?.includes("not found")) {
           errorTitle = "Race Not Found";
           errorMessage = "The selected race could not be found. Please refresh the page and try again.";
+        } else if (data.error?.includes("before FP1")) {
+          errorTitle = "Too Early";
+          errorMessage = "Results cannot be entered before FP1 starts. Please wait until the race weekend begins.";
         }
         
         showModal("error", errorTitle, errorMessage);
@@ -227,11 +232,18 @@ export default function ResultsPage() {
                 }
               >
                 <option value="">Select race...</option>
-                {races.map((r) => (
-                  <option key={r.id} value={r.id} disabled={r.hasResult}>
-                    {r.name} {r.hasResult ? "✓ Results entered" : ""}
-                  </option>
-                ))}
+                {races.map((r) => {
+                  const isDisabled = r.hasResult || !r.canEnterResults;
+                  let statusText = "";
+                  if (r.hasResult) statusText = "✓ Results entered";
+                  else if (!r.canEnterResults) statusText = "⏳ Not started";
+                  
+                  return (
+                    <option key={r.id} value={r.id} disabled={isDisabled}>
+                      {r.name} {statusText}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 

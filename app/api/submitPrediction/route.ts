@@ -15,10 +15,10 @@ export async function POST(req: Request) {
     return Response.json({ error: "Race not found" }, { status: 400 });
   }
 
+  // Columns: id (0), name (1), fp1_start (2)
   const fp1_start = new Date(race[2]);
-  const locked = race[4] === "true";
 
-  if (locked || new Date() > fp1_start) {
+  if (new Date() > fp1_start) {
     return Response.json({ error: "Predictions locked" }, { status: 400 });
   }
 

@@ -5,7 +5,12 @@ import { drivers } from "@/lib/drivers";
 import { users } from "@/lib/users";
 import Modal from "@/app/components/Modal";
 
-type Race = { id: string; name: string };
+type Race = { 
+  id: string; 
+  name: string; 
+  isPredictionLocked: boolean;
+  fp1_start: string;
+};
 
 type ModalState = {
   isOpen: boolean;
@@ -228,15 +233,25 @@ export default function Home() {
                 disabled={!form.user}
               >
                 <option value="">{form.user ? "Select race..." : "Select user first..."}</option>
-                {races.map((r) => (
-                  <option
-                    key={r.id}
-                    value={r.id}
-                    disabled={submittedRaces.includes(r.id)}
-                  >
-                    {r.name} {submittedRaces.includes(r.id) ? "✓ Submitted" : ""}
-                  </option>
-                ))}
+                {races.map((r) => {
+                  const isSubmitted = submittedRaces.includes(r.id);
+                  const isLocked = r.isPredictionLocked;
+                  const isDisabled = isSubmitted || isLocked;
+                  
+                  let statusText = "";
+                  if (isSubmitted) statusText = "✓ Submitted";
+                  else if (isLocked) statusText = "🔒 Locked";
+                  
+                  return (
+                    <option
+                      key={r.id}
+                      value={r.id}
+                      disabled={isDisabled}
+                    >
+                      {r.name} {statusText}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 

@@ -18,6 +18,16 @@ export async function POST(req: Request) {
     return Response.json({ error: "Race not found" }, { status: 400 });
   }
 
+  // Check if FP1 has started (results can only be entered after FP1)
+  // Columns: id (0), name (1), fp1_start (2)
+  const fp1_start = new Date(race[2]);
+  if (new Date() < fp1_start) {
+    return Response.json(
+      { error: "Results cannot be entered before FP1 starts" },
+      { status: 400 }
+    );
+  }
+
   // Check if result already exists for this race
   const results = await readSheet("results");
   const existingResult = results.slice(1).find((r: string[]) => r[0] === race_id);

@@ -4,6 +4,7 @@ import { readSheet } from "@/lib/googleSheets";
 export async function GET() {
   const races = await readSheet("races");
   const results = await readSheet("results");
+  const now = new Date();
 
   const racesData = races.slice(1);
   const resultsData = results.slice(1);
@@ -15,11 +16,17 @@ export async function GET() {
   });
 
   // Return races with their result status
+  // Columns: id (0), name (1), fp1_start (2)
   const racesWithResults = racesData.map((race: string[]) => {
     const result = resultsMap[race[0]];
+    const fp1_start = new Date(race[2]);
+    const canEnterResults = now >= fp1_start;
+    
     return {
       id: race[0],
       name: race[1],
+      fp1_start: race[2],
+      canEnterResults,
       hasResult: !!result,
       result: result
         ? {
