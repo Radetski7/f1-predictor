@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { drivers } from "@/lib/drivers";
-import { users } from "@/lib/users";
+import { userNames as users } from "@/lib/users";
 import Modal from "@/app/components/Modal";
 
 type Race = { 
